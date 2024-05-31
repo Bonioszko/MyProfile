@@ -5,6 +5,8 @@ import Modal from 'react-native-modal'
 import { useUser } from '@/context/UserContext'
 import Card from '@/components/Card'
 import { User } from '@/.expo/types/user'
+import axios from 'axios'
+
 export default function TabTwoScreen() {
   const [isScanning, setIsScanning] = useState(false)
   const [isWriting, setIsWriting] = useState(false)
@@ -33,6 +35,7 @@ export default function TabTwoScreen() {
       stopNfc(() => setTimeout(() => setIsScanning(false), 3000))
     }
   }
+
   async function startNFCWriting() {
     if (!user) {
       console.warn('No user data to write')
@@ -62,9 +65,11 @@ export default function TabTwoScreen() {
       stopNfc(() => setIsWriting)
     }
   }
+
   useEffect(() => {
     const checkIsSupported = async () => {
       const deviceIsSupported = await NfcManager.isSupported()
+      console.log(deviceIsSupported)
 
       setHasNFC(deviceIsSupported)
       if (deviceIsSupported) {
@@ -74,6 +79,7 @@ export default function TabTwoScreen() {
 
     checkIsSupported()
   }, [])
+
   function stopNfc(setState: React.Dispatch<React.SetStateAction<boolean>>) {
     NfcManager.cancelTechnologyRequest()
     setState(false)
@@ -81,7 +87,7 @@ export default function TabTwoScreen() {
 
   return (
     <View className='flex flex-1 flex-col items-center justify-center gap-4'>
-      {!hasNfc ? (
+      {hasNfc ? (
         <>
           <Modal isVisible={isScanning || isWriting} className='flex items-center justify-center '>
             <View className='flex h-1/3 w-full items-center justify-between '>
@@ -109,7 +115,7 @@ export default function TabTwoScreen() {
           <Button title='Share a card' onPress={startNFCWriting} /> */}
         </>
       ) : (
-        <Text>Your device does not support NFC</Text>
+        <Text className='text-white'>Your device does not support NFC</Text>
       )}
     </View>
   )
