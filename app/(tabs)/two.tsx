@@ -82,7 +82,7 @@ export default function TabTwoScreen() {
   }
 
   return (
-    <View className='flex flex-1 flex-col items-center justify-center gap-4'>
+    <View className='flex flex-1 flex-col items-center justify-center gap-4 dark:bg-black'>
       {!hasNfc ? (
         <>
           <Modal isVisible={isScanning || isWriting} className='flex items-center justify-center '>
