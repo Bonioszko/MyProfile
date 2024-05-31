@@ -5,6 +5,7 @@ import Modal from 'react-native-modal'
 import { useUser } from '@/context/UserContext'
 import Card from '@/components/Card'
 import { User } from '@/.expo/types/user'
+import { Link, router } from 'expo-router'
 type OmitFriends = Omit<User, 'friends'>
 export default function TabTwoScreen() {
   const [isScanning, setIsScanning] = useState(false)
@@ -28,11 +29,14 @@ export default function TabTwoScreen() {
       console.info('NFC tech request successful')
       const tag = await NfcManager.getTag()
       console.warn('Tag found', tag)
-      //tutaj set scanned user to data dat is scanned
     } catch (ex) {
       console.warn('Oops!', ex)
     } finally {
       stopNfc(() => setTimeout(() => setIsScanning(false), 3000))
+      router.push({
+        pathname: '/card/[id]',
+        params: { id: 2 },
+      })
     }
   }
   async function startNFCWriting() {
@@ -87,7 +91,14 @@ export default function TabTwoScreen() {
         <>
           <Modal isVisible={isScanning || isWriting} className='flex items-center justify-center '>
             <View className='flex h-1/3 w-full items-center justify-between '>
-              <Card user={isScanning ? scannedUser : user}></Card>
+              {/* <Card user={isScanning ? scannedUser : user}></Card> */}
+              {isScanning ? (
+                <View className='bg-secondary-color dark:bg-secondary-color-dark flex h-1/3 w-2/3 items-center justify-center'>
+                  <Text className='text-3xl font-extrabold'>Scanning ...</Text>
+                </View>
+              ) : (
+                <Card user={user}></Card>
+              )}
               <Button
                 title='Stop scanning'
                 onPress={isScanning ? () => stopNfc(setIsScanning) : () => stopNfc(setIsWriting)}

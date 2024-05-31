@@ -9,11 +9,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'main-color': {
-          DEFAULT: '#EFFFFD',
-          light: '#000000',
-        },
+        'main-color': '#EFFFFD',
+        'main-color-dark': '#22577a',
         'secondary-color': '#F8F6F4',
+        'secondary-color-dark': '#38a3a5',
         'third-color': '#5AB2FF',
       },
     },

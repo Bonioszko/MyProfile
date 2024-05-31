@@ -20,10 +20,18 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        // tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
+        headerStyle: {
+          backgroundColor: theme === 'dark' ? '#22577a' : '#EFFFFD',
+        },
+        tabBarStyle: {
+          backgroundColor: theme === 'dark' ? '#22577a' : '#EFFFFD',
+        },
+        headerRight: () => (
+          <Pressable onPress={toggleTheme}>
+            <FontAwesome name='moon-o' size={24}></FontAwesome>
+          </Pressable>
+        ),
       }}
     >
       <Tabs.Screen
@@ -31,20 +39,6 @@ export default function TabLayout() {
         options={{
           title: 'Tab One',
           tabBarIcon: ({ color }) => <TabBarIcon name='code' color={color} />,
-          headerRight: () => (
-            <Link href='/modal' asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name='info-circle'
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
         }}
       />
       <Tabs.Screen
@@ -52,24 +46,20 @@ export default function TabLayout() {
         options={{
           title: 'Tab Two',
           tabBarIcon: ({ color }) => <TabBarIcon name='code' color={color} />,
-          headerRight: () => (
-            <Pressable onPress={toggleTheme}>
-              <FontAwesome name='moon-o' size={24}></FontAwesome>
-            </Pressable>
-          ),
         }}
       />
-
       <Tabs.Screen
         name='profile'
         options={{
           title: 'Profile',
           tabBarIcon: ({ color }) => <TabBarIcon name='user' color={color} />,
-          headerRight: () => (
-            <Pressable onPress={toggleTheme}>
-              <FontAwesome name='moon-o' size={24}></FontAwesome>
-            </Pressable>
-          ),
+        }}
+      />
+      <Tabs.Screen
+        name='card/[id]'
+        options={{
+          headerTitle: 'Card',
+          tabBarButton: () => null,
         }}
       />
     </Tabs>

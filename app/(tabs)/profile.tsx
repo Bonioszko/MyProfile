@@ -19,8 +19,8 @@ export default function TabTwoScreen() {
     setFormOpened(false)
   }
   return user ? (
-    <ScrollView className=' '>
-      <View className='mt-4 flex items-center justify-center'>
+    <ScrollView className=' bg-secondary-color dark:bg-secondary-color-dark'>
+      <View className=' mt-4 flex items-center justify-center'>
         <Text className=' text-2xl font-bold'>Hello {user.name}</Text>
         <Text className=' text-lg '>This is your card</Text>
 
