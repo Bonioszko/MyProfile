@@ -6,7 +6,7 @@ interface CardProps {
 }
 export default function Card({ user }: CardProps) {
   return (
-    <View className='min-h-[200px]  min-w-[300px] rounded-lg bg-blue-500 p-4'>
+    <View className='bg-third-color  min-h-[200px] min-w-[300px] rounded-lg p-4'>
       <Text>{user.name}</Text>
       <Text>{user.email}</Text>
       <Text>{user.phone}</Text>

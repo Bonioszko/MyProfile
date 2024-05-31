@@ -17,6 +17,7 @@ const UserProvider = ({ children }: { children: ReactNode }): ReactElement => {
     instagram: 'https://www.instagram.com/bartosz.pers',
     linkedin: 'https://www.linkedin.com/in/bartosz-pers-1a2b3c4d',
     twitter: 'https://twitter.com/bartosz.pers',
+    friends: ['friend1', 'friend2'],
   })
 
   return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>

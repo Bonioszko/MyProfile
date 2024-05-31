@@ -5,12 +5,14 @@ import Modal from 'react-native-modal'
 import { useUser } from '@/context/UserContext'
 import Card from '@/components/Card'
 import { User } from '@/.expo/types/user'
+type OmitFriends = Omit<User, 'friends'>
 export default function TabTwoScreen() {
   const [isScanning, setIsScanning] = useState(false)
   const [isWriting, setIsWriting] = useState(false)
   const [hasNfc, setHasNFC] = useState(false)
   const { user } = useUser()
-  const [scannedUser, setScannedUser] = useState<User>({
+
+  const [scannedUser, setScannedUser] = useState<OmitFriends>({
     name: 'not scanned',
     email: 'not scanned',
     phone: 'not scanned',
