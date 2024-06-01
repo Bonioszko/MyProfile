@@ -1,12 +1,17 @@
 import React from 'react'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { Link, Tabs } from 'expo-router'
-import { Pressable } from 'react-native'
+import { Pressable, Text } from 'react-native'
 
 import Colors from '@/constants/Colors'
 import { useColorScheme } from '@/components/useColorScheme'
 import { useClientOnlyValue } from '@/components/useClientOnlyValue'
 import { UserProvider } from '@/context/UserContext'
+import { View } from '@/components/Themed'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import TabTwoScreen from './two'
+import Profile from './profile'
+
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name']
@@ -18,17 +23,19 @@ function TabBarIcon(props: {
 export default function TabLayout() {
   const colorScheme = useColorScheme()
 
+  const Tab = createBottomTabNavigator()
+
   return (
     <UserProvider>
-      <Tabs
+      <Tab.Navigator
         screenOptions={{
           tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
           // Disable the static render of the header on web
           // to prevent a hydration error in React Navigation v6.
-          headerShown: useClientOnlyValue(false, true),
+          headerShown: false,
         }}
       >
-        <Tabs.Screen
+        {/* <Tabs.Screen
           name='index'
           options={{
             title: 'Tab One',
@@ -48,22 +55,24 @@ export default function TabLayout() {
               </Link>
             ),
           }}
-        />
-        <Tabs.Screen
+        /> */}
+        <Tab.Screen
           name='two'
+          component={TabTwoScreen}
           options={{
             title: 'Tab Two',
             tabBarIcon: ({ color }) => <TabBarIcon name='code' color={color} />,
           }}
         />
-        <Tabs.Screen
+        <Tab.Screen
           name='profile'
+          component={Profile}
           options={{
             title: 'Profile',
             tabBarIcon: ({ color }) => <TabBarIcon name='user' color={color} />,
           }}
         />
-      </Tabs>
+      </Tab.Navigator>
     </UserProvider>
   )
 }

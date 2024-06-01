@@ -69,7 +69,6 @@ export default function TabTwoScreen() {
   useEffect(() => {
     const checkIsSupported = async () => {
       const deviceIsSupported = await NfcManager.isSupported()
-      console.log(deviceIsSupported)
 
       setHasNFC(deviceIsSupported)
       if (deviceIsSupported) {

@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, Button, Pressable } from 'react-native'
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
@@ -36,7 +36,7 @@ export default function RootLayout() {
     ...FontAwesome.font,
   })
 
-  axios.defaults.baseURL = process.env.BASE_URL
+  axios.defaults.baseURL = 'http:localhost:8080'
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
@@ -72,7 +72,21 @@ function RootLayoutNav() {
       <Stack.Navigator>
         {authContext.isAuthenticated ? (
           <>
-            <Stack.Screen name='(tabs)' component={TabLayout} />
+            <Stack.Screen
+              name='(tabs)'
+              component={TabLayout}
+              options={{
+                headerTitle: 'MyProfile',
+                headerRight: () => (
+                  <Pressable
+                    className='bg-red-400 p-2 focus:bg-white'
+                    onPress={authContext.signout}
+                  >
+                    <Text className='font-bold text-white'>Signout</Text>
+                  </Pressable>
+                ),
+              }}
+            />
             <Stack.Screen name='modal' component={ModalScreen} />
           </>
         ) : (
