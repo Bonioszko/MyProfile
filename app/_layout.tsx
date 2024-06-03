@@ -1,13 +1,21 @@
+import 'react-native-gesture-handler'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, Button, Pressable } from 'react-native'
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect } from 'react'
 import 'react-native-reanimated'
-
 import { useColorScheme } from '@/components/useColorScheme'
+import axios from 'axios'
+import { AuthProvider, useAuth } from '@/context/AuthContext'
+import Loader from './loader'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import TabLayout from './(tabs)/_layout'
+import ModalScreen from './modal'
+import Signin from './signin'
+import Signup from './signup'
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -28,6 +36,8 @@ export default function RootLayout() {
     ...FontAwesome.font,
   })
 
+  axios.defaults.baseURL = 'http:localhost:8080'
+
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error
@@ -39,18 +49,53 @@ export default function RootLayout() {
     }
   }, [loaded])
 
-  return <RootLayoutNav />
+  return (
+    <AuthProvider>
+      <RootLayoutNav />
+    </AuthProvider>
+  )
 }
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme()
+  const authContext = useAuth()
+
+  const Stack = createNativeStackNavigator()
+
+  if (authContext.isLoading) {
+    // We haven't finished checking for the token yet
+    return <Loader />
+  }
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
-        <Stack.Screen name='modal' options={{ presentation: 'modal' }} />
-      </Stack>
+      <Stack.Navigator>
+        {authContext.isAuthenticated ? (
+          <>
+            <Stack.Screen
+              name='(tabs)'
+              component={TabLayout}
+              options={{
+                headerTitle: 'MyProfile',
+                headerRight: () => (
+                  <Pressable
+                    className='bg-red-400 p-2 focus:bg-white'
+                    onPress={authContext.signout}
+                  >
+                    <Text className='font-bold text-white'>Signout</Text>
+                  </Pressable>
+                ),
+              }}
+            />
+            <Stack.Screen name='modal' component={ModalScreen} />
+          </>
+        ) : (
+          <>
+            <Stack.Screen name='signin' component={Signin} />
+            <Stack.Screen name='signup' component={Signup} />
+          </>
+        )}
+      </Stack.Navigator>
     </ThemeProvider>
   )
 }

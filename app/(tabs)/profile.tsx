@@ -7,7 +7,8 @@ import Card from '@/components/Card'
 import { User } from '@/.expo/types/user'
 import { useUser } from '@/context/UserContext'
 import FormInput from '@/components/FormInput'
-export default function TabTwoScreen() {
+
+export default function Profile() {
   const { user, setUser } = useUser()
   const [formData, setFormData] = useState({ ...user })
   const [formOpened, setFormOpened] = useState(false)
