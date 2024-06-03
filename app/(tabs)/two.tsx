@@ -5,16 +5,33 @@ import Modal from 'react-native-modal'
 import { useUser } from '@/context/UserContext'
 import Card from '@/components/Card'
 import { User } from '@/.expo/types/user'
+import { CardType } from '@/.expo/types/card'
 import { Link, router } from 'expo-router'
 import axios from 'axios'
+import { useAuth } from '@/context/AuthContext'
 
 type OmitFriends = Omit<User, 'friends'>
 export default function TabTwoScreen() {
   const [isScanning, setIsScanning] = useState(false)
   const [isWriting, setIsWriting] = useState(false)
+  const [cardData, setCardData] = useState<CardType | null>(null)
   const [hasNfc, setHasNFC] = useState(false)
-  const { user } = useUser()
+  const { user } = useAuth()
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.EXPO_PUBLIC_SERVER_URL}/api/user/${user?.email}/cards`
+        )
+        const data = await response.json()
 
+        setCardData(data[0])
+      } catch (error) {
+        console.error('Failed to fetch data:', error)
+      }
+    }
+    fetchData()
+  }, [user])
   // const [scannedUser, setScannedUser] = useState<OmitFriends>({
   //   name: 'not scanned',
   //   email: 'not scanned',
@@ -25,6 +42,7 @@ export default function TabTwoScreen() {
   //   twitter: 'not scanned',
   // })
   async function startNfcReading() {
+    let userEmail = ''
     setIsScanning(true)
     try {
       await NfcManager.requestTechnology(NfcTech.Ndef)
@@ -34,16 +52,26 @@ export default function TabTwoScreen() {
         for (const msg of tag.ndefMessage) {
           const content = Ndef.decodeMessage(msg.payload)
           console.log(content)
+          userEmail = content.slice(3)
         }
+      const response = await axios.post('/api/addFriend', {
+        requestorEmail: user?.email,
+        friendEmail: userEmail,
+      })
+      if (response.status === 200) {
+        const responseCard = await axios.get(`/api/user/${userEmail}/cards`)
+        if (responseCard.status === 200) {
+          router.push({
+            pathname: '/card/[id]',
+            params: { id: responseCard.data[0] },
+          })
+        }
+      }
     } catch (ex) {
       console.warn('Oops!', ex)
     } finally {
       NfcManager.cancelTechnologyRequest()
-      stopNfc(() => setTimeout(() => setIsScanning(false), 3000))
-      router.push({
-        pathname: '/card/[id]',
-        params: { id: 2 },
-      })
+      stopNfc(() => setIsScanning(false))
     }
   }
 
@@ -53,15 +81,7 @@ export default function TabTwoScreen() {
       return
     }
 
-    const ndefRecords = [
-      Ndef.textRecord('ctt' + user?.name),
-      Ndef.textRecord('ctt' + user?.email),
-      Ndef.textRecord('ctt' + user?.phone),
-      Ndef.textRecord('ctt' + user?.facebook),
-      Ndef.textRecord('ctt' + user?.instagram),
-      Ndef.textRecord('ctt' + user?.linkedin),
-      Ndef.textRecord('ctt' + user?.twitter),
-    ]
+    const ndefRecords = [Ndef.textRecord('ctt' + user?.email)]
 
     try {
       setIsWriting(true)
@@ -98,7 +118,7 @@ export default function TabTwoScreen() {
 
   return (
     <View className='flex flex-1 flex-col items-center justify-center gap-4 bg-secondary-color dark:bg-secondary-color-dark'>
-      {hasNfc ? (
+      {!hasNfc ? (
         <>
           <Modal isVisible={isScanning || isWriting} className='flex items-center justify-center '>
             <View className='flex h-1/3 w-full items-center justify-between '>
@@ -108,7 +128,7 @@ export default function TabTwoScreen() {
                   <Text className='text-3xl font-extrabold'>Scanning ...</Text>
                 </View>
               ) : (
-                <Card user={user}></Card>
+                <Card card={cardData}></Card>
               )}
               <Button
                 title='Stop scanning'

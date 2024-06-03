@@ -13,6 +13,14 @@ exports.create = async function (req, res) {
   console.log(`✅ Card created for: ${userEmail}`)
   return res.status(200).send({ message: 'Card succesfully created' })
 }
+exports.get = async function (req, res) {
+  const { cardId } = req.params
+
+  let cardDoc = await card.get(cardId)
+  if (!cardDoc) return res.status(400).send({ message: 'No card with that id ' })
+
+  return res.status(200).send({ card: cardDoc })
+}
 exports.modify = async function (req, res) {
   const cardData = req.body
   const cardId = req.params.cardId

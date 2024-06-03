@@ -8,9 +8,9 @@ interface PersonalInfoElementProps {
 
 export default function PersonalInfoElement({ label, text }: PersonalInfoElementProps) {
   return (
-    <View className='my-3 flex flex-row items-center gap-x-2'>
-      <Text className='text-xl font-semibold'>{label}:</Text>
-      <Text className='text-xl'>{text}</Text>
+    <View className='my-3 flex flex-row items-center gap-x-2 dark:text-white'>
+      <Text className='text-xl font-semibold dark:text-white'>{label}:</Text>
+      <Text className='text-xl dark:text-white'>{text}</Text>
     </View>
   )
 }

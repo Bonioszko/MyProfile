@@ -52,21 +52,25 @@ exports.getFriendsCards = async function (req, res) {
   const userEmail = req.params.userEmail
   let userDoc = await user.get({ email: userEmail })
   if (!userDoc) return res.status(400).send({ message: 'No user with that email' })
+  console.log(userDoc)
   let userId = userDoc.id
   console.log(`⏱️ Getting Friends for: ${userEmail}`)
   let friends = await user.getFriends({ userId: userId })
-  console.log(friends)
+
   if (!friends) return res.status(400).send({ message: 'User does not have any friends' })
   let friendsArray = friends[0].friends
-  console.log(friendsArray)
+  console.log(`✅ Friends get: ${userEmail}`)
   let allFriendsCards = []
+  if (friendsArray.length == 0) {
+    return res.status(400).send({ message: 'User does not have any friends' })
+  }
   for (let friendId of friendsArray) {
     let friendCards = await user.getAllUserCards(friendId)
     allFriendsCards = allFriendsCards.concat(friendCards)
   }
+  console.log(`✅ cards get: ${userEmail}`)
   if (allFriendsCards.length === 0)
     return res.status(400).send({ message: 'Friends do not have any cards' })
-  console.log(allFriendsCards)
 
   return res.status(200).json({ cards: allFriendsCards })
 }

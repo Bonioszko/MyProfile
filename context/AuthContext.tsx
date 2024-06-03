@@ -1,3 +1,4 @@
+import { User } from '@/.expo/types/user'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios, { AxiosError } from 'axios'
 import React, {
@@ -14,6 +15,7 @@ import { ToastAndroid } from 'react-native'
 interface AuthContextInterface {
   isLoading: Boolean
   isAuthenticated: Boolean
+  user: User | null
   signup: (user: { name: String; token: String; email: String }) => void
   signout: () => void
 }
@@ -23,7 +25,7 @@ const AuthContext = createContext<AuthContextInterface | undefined>(undefined)
 const AuthProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [isAuthenticated, setIsAuthenticated] = useState<Boolean>(false)
   const [isLoading, setIsLoading] = useState<Boolean>(true)
-
+  const [user, setUser] = useState<User | null>(null)
   const getAuth = useCallback(async () => {
     try {
       setIsLoading(true)
@@ -31,9 +33,12 @@ const AuthProvider = ({ children }: { children: ReactNode }): ReactElement => {
       // Get auth header from storage if not set
       if (!axios.defaults.headers.common['Authorization']) {
         const user = await AsyncStorage.getItem('user')
+
         if (user) {
-          const token = await JSON.parse(user).token
+          const parsedUser = await JSON.parse(user)
+          const token = parsedUser.token
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+          setUser({ email: parsedUser.email })
         }
       }
 
@@ -72,6 +77,7 @@ const AuthProvider = ({ children }: { children: ReactNode }): ReactElement => {
       getAuth()
 
       await AsyncStorage.setItem('user', JSON.stringify(user))
+      setUser({ email: user.email })
     } catch (error) {
       // Error saving data
     }
@@ -91,7 +97,7 @@ const AuthProvider = ({ children }: { children: ReactNode }): ReactElement => {
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isLoading, signup, signout }}>
+    <AuthContext.Provider value={{ isAuthenticated, isLoading, user, signup, signout }}>
       {children}
     </AuthContext.Provider>
   )

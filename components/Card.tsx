@@ -11,7 +11,7 @@ export default function Card({ card, isOwner = false }: CardProps) {
   const handlePress = () => {
     router.push({
       pathname: '/card/[id]',
-      params: { id: 2 },
+      params: { id: card.id },
     })
   }
 

@@ -22,6 +22,7 @@ router.get('/api/auth', auth.verify(), (req, res) => res.status(200).send('You a
 
 //tu dodac potem auth.verify
 router.post('/api/card', use(cardController.create))
+router.get('/api/card/:cardId', use(cardController.get))
 router.patch('/api/card/:cardId', use(cardController.modify))
 router.get('/api/user/:userEmail/cards', use(userController.getCards))
 router.post('/api/user/friends', use(userController.addFriend))

@@ -39,8 +39,7 @@ exports.modify = async function (cardId, cardData) {
 }
 
 exports.get = async function (cardId) {
-  console.log(cardId)
   const cardData = await Card.findOne({ id: cardId })
-  console.log(cardData)
+
   return cardData
 }

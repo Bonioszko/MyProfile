@@ -8,22 +8,20 @@ import { User } from '@/.expo/types/user'
 import { CardType } from '@/.expo/types/card'
 import { useUser } from '@/context/UserContext'
 import FormInput from '@/components/FormInput'
-
+import { useAuth } from '@/context/AuthContext'
+import axios from 'axios'
 export default function Profile() {
-  const { user, setUser } = useUser()
-  const [formData, setFormData] = useState({ ...user })
+  const { user } = useAuth()
   const [formOpened, setFormOpened] = useState(false)
   const [cardData, setCardData] = useState<CardType | null>(null)
+  const [formData, setFormData] = useState({ ...cardData })
   const [friendsCards, setFriendsCards] = useState<CardType[]>([])
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          `${process.env.EXPO_PUBLIC_SERVER_URL}/user/${user?.email}/cards`
-        )
-        const data = await response.json()
+        const response = await axios.get(`/api/user/${user?.email}/cards`)
 
-        setCardData(data[0])
+        setCardData(response.data[0])
       } catch (error) {
         console.error('Failed to fetch data:', error)
       }
@@ -34,12 +32,12 @@ export default function Profile() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log(user?.email)
         const response = await fetch(
-          `${process.env.EXPO_PUBLIC_SERVER_URL}/user/${user?.email}/friends/cards`
+          `${process.env.EXPO_PUBLIC_SERVER_URL}/api/user/${user?.email}/friends/cards`
         )
-        const data = await response.json()
-
-        setFriendsCards(data.cards)
+        console.log(response.data)
+        setFriendsCards(response.data.cards || [])
       } catch (error) {
         console.error('Failed to fetch data:', error)
       }
@@ -52,13 +50,17 @@ export default function Profile() {
   }
   const saveForm = async () => {
     const cardId = cardData?.id
+    const method = cardId ? 'PATCH' : 'POST'
+    const url = cardId
+      ? `${process.env.EXPO_PUBLIC_SERVER_URL}/api/card/${cardId}`
+      : `${process.env.EXPO_PUBLIC_SERVER_URL}/api/card`
     try {
-      const response = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/card/${cardId}`, {
-        method: 'PATCH',
+      const response = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ userEmail: user?.email, ...formData }),
       })
       console.log(response)
       if (!response.ok) {
@@ -76,25 +78,40 @@ export default function Profile() {
   return user ? (
     <ScrollView className=' bg-secondary-color dark:bg-secondary-color-dark'>
       <View className='mt-4 flex items-center justify-center'>
+        <Text className=' text-2xl font-bold text-gray-900 dark:text-white'>
+          Hello {user.email}
+        </Text>
+
+        <Image
+          source={{ uri: `https://api.dicebear.com/8.x/bottts/png?seed=${user.email}` }}
+          className='h-24 w-24'
+        />
+        <Text className=' text-lg text-gray-900 dark:text-white '>This is your card</Text>
         <Pressable
           className='mt-4 flex items-center justify-center '
-          onPress={() => setFormOpened(true)}
+          onPress={() => {
+            setFormData({ ...cardData })
+            setFormOpened(true)
+          }}
         >
-          <Text className=' text-2xl font-bold text-gray-900 dark:text-white'>
-            Hello {user.name}
-          </Text>
-          <Text className=' text-lg text-gray-900 dark:text-white '>This is your card</Text>
-
-          <Image
-            source={{ uri: `https://api.dicebear.com/8.x/bottts/png?seed=${user.email}` }}
-            className='h-24 w-24'
-          />
           <View className='flex  min-w-[300px] items-end p-3'>
             <FontAwesome name='pencil' size={25} color='#6B7280'></FontAwesome>
           </View>
         </Pressable>
         <View className='mb-8 flex w-full items-center justify-center'>
-          {cardData ? <Card card={cardData} isOwner></Card> : <Text>Create a card</Text>}
+          {cardData ? (
+            <Card card={cardData} isOwner></Card>
+          ) : (
+            <Pressable
+              className='rounded-lg bg-white  p-2'
+              onPress={() => {
+                setFormData({ email: user?.email })
+                setFormOpened(true)
+              }}
+            >
+              <Text>Create a card</Text>
+            </Pressable>
+          )}
         </View>
         <View className='flex flex-col  items-center justify-center gap-y-4 '>
           <Text className='font-bold text-gray-900 dark:text-white'>Your friends</Text>
@@ -105,13 +122,13 @@ export default function Profile() {
               </View>
             ))
           ) : (
-            <Text>No friends found :(</Text>
+            <Text>No friends found :</Text>
           )}
         </View>
       </View>
       <Modal isVisible={formOpened} className='flex  items-center justify-center'>
         <View className='flex w-full items-center justify-center gap-y-2 rounded-lg bg-main-color p-7'>
-          <Text className='mb-4 text-3xl font-bold'>Update you data</Text>
+          <Text className='mb-4 text-3xl font-bold'>Update your data</Text>
           <FormInput
             key='name'
             input={formData['name']}
@@ -152,7 +169,7 @@ export default function Profile() {
             key='twitter'
             input={formData['twitter']}
             changeInput={(newText: string) => changeInput('twitter', newText)}
-            label='facebook'
+            label='twitter'
           />
           <View className='w-full flex-row justify-around'>
             <Pressable

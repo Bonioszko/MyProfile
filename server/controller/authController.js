@@ -5,6 +5,7 @@ const utility = require('../helper/utility')
 
 exports.signin = async function (req, res, next) {
   const data = req.body
+
   let userData,
     useEmail = false // determine if flow is email or social
 

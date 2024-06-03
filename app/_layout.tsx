@@ -38,7 +38,7 @@ export default function RootLayout() {
     ...FontAwesome.font,
   })
 
-  axios.defaults.baseURL = 'http:localhost:8080'
+  axios.defaults.baseURL = process.env.EXPO_PUBLIC_SERVER_URL
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
