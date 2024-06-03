@@ -91,8 +91,8 @@ export default function Profile() {
           <Text className='font-bold text-gray-900 dark:text-white'>Your friends</Text>
           {friendsCards.length > 0 ? (
             friendsCards.map((card) => (
-              <View>
-                <Card key={card.id} card={card}></Card>
+              <View key={card.id}>
+                <Card card={card}></Card>
               </View>
             ))
           ) : (

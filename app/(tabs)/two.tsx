@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Button, View, Text, Pressable } from 'react-native'
-import NfcManager, { NfcTech, Ndef } from 'react-native-nfc-manager'
+import NfcManager, { NfcTech, Ndef, nfcManager } from 'react-native-nfc-manager'
 import Modal from 'react-native-modal'
 import { useUser } from '@/context/UserContext'
 import Card from '@/components/Card'
@@ -29,11 +29,16 @@ export default function TabTwoScreen() {
     try {
       await NfcManager.requestTechnology(NfcTech.Ndef)
       console.info('NFC tech request successful')
-      const tag = await NfcManager.getTag()
-      console.warn('Tag found', tag)
+      let tag = await NfcManager.getTag()
+      if (tag?.ndefMessage)
+        for (const msg of tag.ndefMessage) {
+          const content = Ndef.decodeMessage(msg.payload)
+          console.log(content)
+        }
     } catch (ex) {
       console.warn('Oops!', ex)
     } finally {
+      NfcManager.cancelTechnologyRequest()
       stopNfc(() => setTimeout(() => setIsScanning(false), 3000))
       router.push({
         pathname: '/card/[id]',
@@ -49,26 +54,26 @@ export default function TabTwoScreen() {
     }
 
     const ndefRecords = [
-      Ndef.textRecord(user.name),
-      Ndef.textRecord(user.email),
-      Ndef.textRecord(user.phone),
-      Ndef.textRecord(user.facebook),
-      Ndef.textRecord(user.instagram),
-      Ndef.textRecord(user.linkedin),
-      Ndef.textRecord(user.twitter),
+      Ndef.textRecord('ctt' + user?.name),
+      Ndef.textRecord('ctt' + user?.email),
+      Ndef.textRecord('ctt' + user?.phone),
+      Ndef.textRecord('ctt' + user?.facebook),
+      Ndef.textRecord('ctt' + user?.instagram),
+      Ndef.textRecord('ctt' + user?.linkedin),
+      Ndef.textRecord('ctt' + user?.twitter),
     ]
 
     try {
       setIsWriting(true)
       await NfcManager.requestTechnology(NfcTech.Ndef)
-      console.info('NFC tech request successful')
+
       const bytes = Ndef.encodeMessage(ndefRecords)
       await NfcManager.ndefHandler.writeNdefMessage(bytes)
       console.info('NFC message written')
     } catch (ex) {
       console.warn('Oops!', ex)
     } finally {
-      stopNfc(() => setIsWriting)
+      stopNfc(setIsWriting)
     }
   }
 
