@@ -9,8 +9,8 @@ interface SocialInfoElementProps {
 export default function SocialInfoElement({ icon, link }: SocialInfoElementProps) {
   return (
     <Pressable onPress={() => Linking.openURL(link)}>
-      <View className='my-4 flex  flex-row items-center gap-x-5'>
-        <FontAwesome name={icon} size={24}></FontAwesome>
+      <View className='my-4 flex flex-row items-center gap-x-5'>
+        <FontAwesome name={icon} size={24} />
         <Text>{link}</Text>
       </View>
     </Pressable>

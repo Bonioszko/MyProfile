@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, View, Text, Pressable, ScrollView } from 'react-native'
+import { Button, View, Text, Pressable, ScrollView, Image } from 'react-native'
 import Modal from 'react-native-modal'
 import NfcManager, { NfcTech } from 'react-native-nfc-manager'
 import { FontAwesome } from '@expo/vector-icons'
@@ -75,17 +75,26 @@ export default function Profile() {
   }
   return user ? (
     <ScrollView className=' bg-secondary-color dark:bg-secondary-color-dark'>
-      <View className=' mt-4 flex items-center justify-center'>
-        <Text className=' text-2xl font-bold text-gray-900 dark:text-white'>Hello {user.name}</Text>
-        <Text className=' text-lg text-gray-900 dark:text-white '>This is your card</Text>
+      <View className='mt-4 flex items-center justify-center'>
+        <Pressable
+          className='mt-4 flex items-center justify-center '
+          onPress={() => setFormOpened(true)}
+        >
+          <Text className=' text-2xl font-bold text-gray-900 dark:text-white'>
+            Hello {user.name}
+          </Text>
+          <Text className=' text-lg text-gray-900 dark:text-white '>This is your card</Text>
 
+          <Image
+            source={{ uri: `https://api.dicebear.com/8.x/bottts/png?seed=${user.email}` }}
+            className='h-24 w-24'
+          />
+          <View className='flex  min-w-[300px] items-end p-3'>
+            <FontAwesome name='pencil' size={25} color='#6B7280'></FontAwesome>
+          </View>
+        </Pressable>
         <View className='mb-8 flex w-full items-center justify-center'>
-          <Pressable onPress={() => setFormOpened(true)}>
-            <View className='flex  min-w-[300px] items-end p-3'>
-              <FontAwesome name='pencil' size={25} color='#6B7280'></FontAwesome>
-            </View>
-          </Pressable>
-          {cardData ? <Card card={cardData}></Card> : <Text>'create a card'</Text>}
+          {cardData ? <Card card={cardData} isOwner></Card> : <Text>Create a card</Text>}
         </View>
         <View className='flex flex-col  items-center justify-center gap-y-4 '>
           <Text className='font-bold text-gray-900 dark:text-white'>Your friends</Text>
@@ -96,12 +105,13 @@ export default function Profile() {
               </View>
             ))
           ) : (
-            <Text>Your friends does not have cards</Text>
+            <Text>No friends found :(</Text>
           )}
         </View>
       </View>
       <Modal isVisible={formOpened} className='flex  items-center justify-center'>
-        <View className='flex w-4/5 items-center justify-center gap-y-1 rounded-lg bg-main-color p-7'>
+        <View className='flex w-full items-center justify-center gap-y-2 rounded-lg bg-main-color p-7'>
+          <Text className='mb-4 text-3xl font-bold'>Update you data</Text>
           <FormInput
             key='name'
             input={formData['name']}
@@ -145,11 +155,14 @@ export default function Profile() {
             label='facebook'
           />
           <View className='w-full flex-row justify-around'>
-            <Pressable onPress={saveForm} className='rounded-lg bg-third-color p-2'>
-              <Text className='font-bold'>Submit</Text>
-            </Pressable>
-            <Pressable onPress={() => setFormOpened(false)} className='rounded-lg bg-red-500 p-2'>
+            <Pressable
+              onPress={() => setFormOpened(false)}
+              className='mt-4 rounded-lg bg-red-500 p-2'
+            >
               <Text className='font-bold'>Cancel</Text>
+            </Pressable>
+            <Pressable onPress={saveForm} className='mt-4 rounded-lg bg-third-color p-2'>
+              <Text className='font-bold'>Submit</Text>
             </Pressable>
           </View>
         </View>

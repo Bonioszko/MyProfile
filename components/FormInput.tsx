@@ -8,13 +8,13 @@ interface FormInputProps {
 
 export default function FormInput({ input, changeInput, label }: FormInputProps) {
   return (
-    <View className=' w-full '>
-      <Text className=' text-lg font-bold'>{label}</Text>
+    <View className='w-full'>
+      <Text className='text-lg font-semibold capitalize'>{label}</Text>
       <TextInput
         value={input}
         onChangeText={(newText) => changeInput(newText)}
-        className='rounded-lg border-2 border-solid border-black p-1'
-      ></TextInput>
+        className='rounded-lg border border-solid border-gray-700 p-1 px-2'
+      />
     </View>
   )
 }
