@@ -16,6 +16,7 @@ export default function Profile() {
   const [cardData, setCardData] = useState<CardType | null>(null)
   const [formData, setFormData] = useState({ ...cardData })
   const [friendsCards, setFriendsCards] = useState<CardType[]>([])
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -23,7 +24,8 @@ export default function Profile() {
 
         setCardData(response.data[0])
       } catch (error) {
-        console.error('Failed to fetch data:', error)
+        console.log(error.request)
+        console.error('Failed to user card:', error)
       }
     }
     fetchData()
@@ -32,14 +34,10 @@ export default function Profile() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(user?.email)
-        const response = await fetch(
-          `${process.env.EXPO_PUBLIC_SERVER_URL}/api/user/${user?.email}/friends/cards`
-        )
-        console.log(response.data)
+        const response = await axios.get(`/api/user/${user?.email}/friends/cards`)
         setFriendsCards(response.data.cards || [])
       } catch (error) {
-        console.error('Failed to fetch data:', error)
+        console.error('Failed to friend cards:', error)
       }
     }
     fetchData()

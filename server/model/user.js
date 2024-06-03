@@ -83,6 +83,7 @@ exports.verifyPassword = async function ({ id, account, password }) {
   delete data.password
   return verified ? data : false
 }
+
 exports.addCard = async function ({ userId, cardId }) {
   const updatedUser = await User.findOneAndUpdate(
     { id: userId },
@@ -91,6 +92,7 @@ exports.addCard = async function ({ userId, cardId }) {
   )
   return updatedUser
 }
+
 exports.getAllUserCards = async function (userId) {
   const user = await User.findOne({ id: userId })
 
@@ -98,6 +100,7 @@ exports.getAllUserCards = async function (userId) {
   const cards = await Promise.all(cardPromises)
   return cards
 }
+
 exports.addFriend = async function ({ userId, friendId }) {
   const result = await User.updateOne({ id: userId }, { $addToSet: { friends: friendId } })
   console.log(result)

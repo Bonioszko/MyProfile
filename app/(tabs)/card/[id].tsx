@@ -15,7 +15,6 @@ export default function CardDetail() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(`${process.env.EXPO_PUBLIC_SERVER_URL}/api/card/${id}`)
         const response = await axios.get(`${process.env.EXPO_PUBLIC_SERVER_URL}/api/card/${id}`)
         console.log(response.data)
         setCardData(response.data.card)

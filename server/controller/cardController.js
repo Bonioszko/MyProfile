@@ -1,6 +1,7 @@
 const card = require('../model/card')
 const user = require('../model/user')
 const utility = require('../helper/utility')
+
 exports.create = async function (req, res) {
   const { userEmail, ...cardData } = req.body
   utility.validate({ userEmail }, ['userEmail'])
@@ -13,6 +14,7 @@ exports.create = async function (req, res) {
   console.log(`✅ Card created for: ${userEmail}`)
   return res.status(200).send({ message: 'Card succesfully created' })
 }
+
 exports.get = async function (req, res) {
   const { cardId } = req.params
 
@@ -21,18 +23,11 @@ exports.get = async function (req, res) {
 
   return res.status(200).send({ card: cardDoc })
 }
+
 exports.modify = async function (req, res) {
   const cardData = req.body
   const cardId = req.params.cardId
-  utility.validate(cardData, [
-    'name',
-    'email',
-    'phone',
-    'facebook',
-    'twitter',
-    'instagram',
-    'linkedin',
-  ])
+
   console.log(`⏱️  Updating data for: ${cardId}`)
 
   let cardUpdated = await card.modify(cardId, cardData)

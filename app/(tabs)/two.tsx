@@ -46,15 +46,15 @@ export default function TabTwoScreen() {
     setIsScanning(true)
     try {
       await NfcManager.requestTechnology(NfcTech.Ndef)
-      console.info('NFC tech request successful')
       let tag = await NfcManager.getTag()
-      if (tag?.ndefMessage)
-        for (const msg of tag.ndefMessage) {
-          const content = Ndef.decodeMessage(msg.payload)
-          console.log(content)
-          userEmail = content.slice(3)
-        }
-      const response = await axios.post('/api/addFriend', {
+      if (tag?.ndefMessage) {
+        const content = Ndef.decodeMessage(tag.ndefMessage[0].payload)
+
+        userEmail = content[0].type
+      }
+      console.log('Tag owner: ', userEmail)
+
+      const response = await axios.post('/api/user/friends', {
         requestorEmail: user?.email,
         friendEmail: userEmail,
       })
@@ -63,7 +63,7 @@ export default function TabTwoScreen() {
         if (responseCard.status === 200) {
           router.push({
             pathname: '/card/[id]',
-            params: { id: responseCard.data[0] },
+            params: { id: responseCard.data[0].id },
           })
         }
       }
@@ -102,7 +102,6 @@ export default function TabTwoScreen() {
       const deviceIsSupported = await NfcManager.isSupported()
 
       setHasNFC(deviceIsSupported)
-      console.log(process.env.EXPO_PUBLIC_SERVER_URL)
       if (deviceIsSupported) {
         await NfcManager.start()
       }
@@ -118,7 +117,7 @@ export default function TabTwoScreen() {
 
   return (
     <View className='flex flex-1 flex-col items-center justify-center gap-4 bg-secondary-color dark:bg-secondary-color-dark'>
-      {!hasNfc ? (
+      {hasNfc ? (
         <>
           <Modal isVisible={isScanning || isWriting} className='flex items-center justify-center '>
             <View className='flex h-1/3 w-full items-center justify-between '>

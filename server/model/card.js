@@ -19,17 +19,19 @@ const Card = mongoose.model('Card', CardSchema, 'card')
 exports.create = async function (cardData, userId) {
   const data = {
     id: uuidv4(),
-    name: cardData.name,
-    email: cardData.email,
-    phone: cardData.phone,
-    facebook: cardData.facebook,
-    twitter: cardData.twitter,
-    instagram: cardData.instagram,
-    linkedin: cardData.linkedin,
+    name: cardData?.name ?? '',
+    email: cardData?.email ?? '',
+    phone: cardData?.phone ?? '',
+    facebook: cardData?.facebook ?? '',
+    twitter: cardData?.twitter ?? '',
+    instagram: cardData?.instagram ?? '',
+    linkedin: cardData?.linkedin ?? '',
   }
   const newCard = Card(data)
   await newCard.save()
   await user.addCard({ userId: userId, cardId: newCard.id })
+
+  console.log(`✅ Card created for: ${data.email}`)
 
   return newCard
 }

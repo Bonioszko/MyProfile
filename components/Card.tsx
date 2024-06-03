@@ -1,5 +1,5 @@
 import { CardType } from '@/.expo/types/card'
-import { View, Text, Linking, Pressable, Image } from 'react-native'
+import { View, Text, Linking, Pressable, Image, ToastAndroid } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import { Link, router } from 'expo-router'
@@ -28,14 +28,42 @@ export default function Card({ card, isOwner = false }: CardProps) {
         <Text className='text-l font-bold'>{card?.email}</Text>
         <Text className='text-l font-bold'>{card?.phone}</Text>
         <View className='flex w-[250px] flex-row justify-between'>
-          <FontAwesome name='facebook' size={24} onPress={() => Linking.openURL(card?.facebook)} />
+          <FontAwesome
+            name='facebook'
+            size={24}
+            onPress={() =>
+              card.facebook
+                ? Linking.openURL(card?.facebook)
+                : ToastAndroid.show('No facebook link found', ToastAndroid.SHORT)
+            }
+          />
           <FontAwesome
             name='instagram'
             size={24}
-            onPress={() => Linking.openURL(card?.instagram)}
+            onPress={() =>
+              card.instagram
+                ? Linking.openURL(card?.instagram)
+                : ToastAndroid.show('No instagram link found', ToastAndroid.SHORT)
+            }
           />
-          <FontAwesome name='linkedin' size={24} onPress={() => Linking.openURL(card?.linkedin)} />
-          <FontAwesome name='twitter' size={24} onPress={() => Linking.openURL(card?.twitter)} />
+          <FontAwesome
+            name='linkedin'
+            size={24}
+            onPress={() =>
+              card.linkedin
+                ? Linking.openURL(card?.linkedin)
+                : ToastAndroid.show('No linkedin link found', ToastAndroid.SHORT)
+            }
+          />
+          <FontAwesome
+            name='twitter'
+            size={24}
+            onPress={() =>
+              card.twitter
+                ? Linking.openURL(card?.twitter)
+                : ToastAndroid.show('No twitter link found', ToastAndroid.SHORT)
+            }
+          />
         </View>
       </View>
     </Pressable>
