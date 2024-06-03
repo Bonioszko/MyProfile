@@ -1,6 +1,7 @@
 const express = require('express')
 const authController = require('./controller/authController')
 const userController = require('./controller/userController')
+const cardController = require('./controller/cardController')
 const auth = require('./model/auth')
 
 const use = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
@@ -18,5 +19,8 @@ router.delete('/api/auth', auth.verify(), use(authController.signout))
 
 // Test protected route
 router.get('/api/auth', auth.verify(), (req, res) => res.status(200).send('You are verified!'))
+
+//tu dodac potem auth.verify
+router.post('/api/card', use(cardController.create))
 
 module.exports = router

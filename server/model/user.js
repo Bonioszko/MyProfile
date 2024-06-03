@@ -8,6 +8,8 @@ const UserSchema = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },
   password: { type: String },
+  friends: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  cards: [{ type: Schema.Types.ObjectId, ref: 'Card' }],
   date_created: Date,
   google_id: { type: String },
 })
@@ -19,6 +21,8 @@ exports.create = async function ({ user, account }) {
     id: uuidv4(),
     name: user.name,
     email: user.email,
+    friends: [],
+    cards: [],
     date_created: new Date(),
     google_id: user.google_id,
   }
