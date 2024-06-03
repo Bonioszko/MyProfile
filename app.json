@@ -12,7 +12,6 @@
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
-
     "ios": {
       "supportsTablet": true,
       "splash": {
@@ -31,7 +30,10 @@
         "resizeMode": "contain",
         "backgroundColor": "#000000"
       },
-      "package": "com.anonymous.MyProfileProject"
+      "package": "com.anonymous.MyProfileProject",
+      "permissions": [
+        "android.permission.NFC"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -39,10 +41,19 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router","react-native-nfc-manager"
+      "expo-router",
+      "react-native-nfc-manager"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "ad2da745-537a-4cf3-af4d-a1f5e0c5cb7c"
+      }
     }
   }
 }
