@@ -6,6 +6,7 @@ import { useUser } from '@/context/UserContext'
 import Card from '@/components/Card'
 import { User } from '@/.expo/types/user'
 import { Link, router } from 'expo-router'
+
 type OmitFriends = Omit<User, 'friends'>
 export default function TabTwoScreen() {
   const [isScanning, setIsScanning] = useState(false)
@@ -73,6 +74,7 @@ export default function TabTwoScreen() {
       const deviceIsSupported = await NfcManager.isSupported()
 
       setHasNFC(deviceIsSupported)
+      console.log(process.env.EXPO_PUBLIC_SERVER_URL)
       if (deviceIsSupported) {
         await NfcManager.start()
       }
@@ -93,7 +95,7 @@ export default function TabTwoScreen() {
             <View className='flex h-1/3 w-full items-center justify-between '>
               {/* <Card user={isScanning ? scannedUser : user}></Card> */}
               {isScanning ? (
-                <View className='bg-secondary-color dark:bg-secondary-color-dark flex h-1/3 w-2/3 items-center justify-center'>
+                <View className='flex h-1/3 w-2/3 items-center justify-center bg-secondary-color dark:bg-secondary-color-dark'>
                   <Text className='text-3xl font-extrabold'>Scanning ...</Text>
                 </View>
               ) : (

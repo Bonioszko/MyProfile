@@ -1,12 +1,12 @@
-import { User } from '@/.expo/types/user'
+import { CardType } from '@/.expo/types/card'
 import { View, Text, Linking, Pressable } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import { Link, router } from 'expo-router'
 interface CardProps {
-  user: User
+  card: CardType
 }
-export default function Card({ user }: CardProps) {
+export default function Card({ card }: CardProps) {
   const handlePress = () => {
     router.push({
       pathname: '/card/[id]',
@@ -16,14 +16,14 @@ export default function Card({ user }: CardProps) {
 
   return (
     <Pressable onPress={handlePress}>
-      <View className='bg-third-color  min-h-[200px] min-w-[300px] rounded-lg p-4'>
-        <Text>{user.name}</Text>
-        <Text>{user.email}</Text>
-        <Text>{user.phone}</Text>
-        <FontAwesome name='facebook' size={24} onPress={() => Linking.openURL(user.facebook)} />
-        <FontAwesome name='instagram' size={24} onPress={() => Linking.openURL(user.instagram)} />
-        <FontAwesome name='linkedin' size={24} onPress={() => Linking.openURL(user.linkedin)} />
-        <FontAwesome name='twitter' size={24} onPress={() => Linking.openURL(user.twitter)} />
+      <View className='min-h-[200px]  min-w-[300px] rounded-lg bg-third-color p-4'>
+        <Text>{card.name}</Text>
+        <Text>{card.email}</Text>
+        <Text>{card.phone}</Text>
+        <FontAwesome name='facebook' size={24} onPress={() => Linking.openURL(card.facebook)} />
+        <FontAwesome name='instagram' size={24} onPress={() => Linking.openURL(card.instagram)} />
+        <FontAwesome name='linkedin' size={24} onPress={() => Linking.openURL(card.linkedin)} />
+        <FontAwesome name='twitter' size={24} onPress={() => Linking.openURL(card.twitter)} />
       </View>
     </Pressable>
   )

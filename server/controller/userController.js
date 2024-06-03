@@ -21,7 +21,7 @@ exports.create = async function (req, res) {
 exports.getCards = async function (req, res) {
   const userEmail = req.params.userEmail
   let userDoc = await user.get({ email: userEmail })
-  if (!userDoc) return res.status(400).send({ message: 'No user with that email' })
+  if (!userDoc) return res.status(400).json({ message: 'No user with that email' })
   let userId = userDoc.id
 
   console.log(`⏱️ Getting user cards for: ${userEmail}`)
