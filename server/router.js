@@ -22,5 +22,9 @@ router.get('/api/auth', auth.verify(), (req, res) => res.status(200).send('You a
 
 //tu dodac potem auth.verify
 router.post('/api/card', use(cardController.create))
+router.patch('/api/card/:cardId', use(cardController.modify))
+router.get('/api/user/:userEmail/cards', use(userController.getCards))
+router.post('/api/user/friends', use(userController.addFriend))
+router.get('/api/user/:userEmail/friends/cards', use(userController.getFriendsCards))
 
 module.exports = router

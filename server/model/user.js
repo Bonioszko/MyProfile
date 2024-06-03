@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt')
 const mongoose = require('mongoose')
 const { v4: uuidv4 } = require('uuid')
+const card = require('../model/card')
+const { useReducer } = require('react')
 const Schema = mongoose.Schema
 
 const UserSchema = new Schema({
@@ -8,8 +10,8 @@ const UserSchema = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },
   password: { type: String },
-  friends: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-  cards: [{ type: Schema.Types.ObjectId, ref: 'Card' }],
+  friends: [{ type: String, ref: 'User' }],
+  cards: [{ type: String, ref: 'Card' }],
   date_created: Date,
   google_id: { type: String },
 })
@@ -80,4 +82,30 @@ exports.verifyPassword = async function ({ id, account, password }) {
 
   delete data.password
   return verified ? data : false
+}
+exports.addCard = async function ({ userId, cardId }) {
+  const updatedUser = await User.findOneAndUpdate(
+    { id: userId },
+    { $push: { cards: cardId } },
+    { new: true }
+  )
+  return updatedUser
+}
+exports.getAllUserCards = async function (userId) {
+  const user = await User.findOne({ id: userId })
+
+  const cardPromises = user.cards.map((id) => card.get(id))
+  const cards = await Promise.all(cardPromises)
+  return cards
+}
+exports.addFriend = async function ({ userId, friendId }) {
+  const result = await User.updateOne({ id: userId }, { $addToSet: { friends: friendId } })
+  console.log(result)
+  const friend = await User.updateOne({ id: friendId }, { $addToSet: { friends: userId } })
+  return result
+}
+
+exports.getFriends = async function ({ userId }) {
+  const result = await User.find({ id: userId }, { friends: 1, _id: 0 })
+  return result
 }
