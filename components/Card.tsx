@@ -16,14 +16,16 @@ export default function Card({ card }: CardProps) {
 
   return (
     <Pressable onPress={handlePress}>
-      <View className='min-h-[200px]  min-w-[300px] rounded-lg bg-third-color p-4'>
-        <Text>{card.name}</Text>
-        <Text>{card.email}</Text>
-        <Text>{card.phone}</Text>
-        <FontAwesome name='facebook' size={24} onPress={() => Linking.openURL(card.facebook)} />
-        <FontAwesome name='instagram' size={24} onPress={() => Linking.openURL(card.instagram)} />
-        <FontAwesome name='linkedin' size={24} onPress={() => Linking.openURL(card.linkedin)} />
-        <FontAwesome name='twitter' size={24} onPress={() => Linking.openURL(card.twitter)} />
+      <View className='flex  min-h-[200px] w-[300px] items-center justify-around rounded-lg bg-third-color p-4'>
+        <Text className='text-xl font-bold'>{card.name}</Text>
+        <Text className='text-l font-bold'>{card.email}</Text>
+        <Text className='text-l font-bold'>{card.phone}</Text>
+        <View className='flex w-[250px] flex-row justify-between'>
+          <FontAwesome name='facebook' size={24} onPress={() => Linking.openURL(card.facebook)} />
+          <FontAwesome name='instagram' size={24} onPress={() => Linking.openURL(card.instagram)} />
+          <FontAwesome name='linkedin' size={24} onPress={() => Linking.openURL(card.linkedin)} />
+          <FontAwesome name='twitter' size={24} onPress={() => Linking.openURL(card.twitter)} />
+        </View>
       </View>
     </Pressable>
   )

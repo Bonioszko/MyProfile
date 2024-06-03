@@ -29,7 +29,7 @@ export default function TabLayout() {
     <UserProvider>
       <Tab.Navigator
         screenOptions={{
-          headerShown: useClientOnlyValue(false, true),
+          headerShown: false,
           headerStyle: {
             backgroundColor: theme === 'dark' ? '#22577a' : '#EFFFFD',
           },
@@ -43,7 +43,7 @@ export default function TabLayout() {
           ),
         }}
       >
-        <Tabs.Screen
+        {/* <Tab.Screen
           name='index'
           options={{
             title: 'Tab One',
@@ -63,7 +63,7 @@ export default function TabLayout() {
               </Link>
             ),
           }}
-        />
+        /> */}
         <Tab.Screen
           name='two'
           component={TabTwoScreen}

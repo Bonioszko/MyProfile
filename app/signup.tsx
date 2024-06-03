@@ -24,6 +24,7 @@ export default function Signup({ navigation }) {
         email,
         password,
       }
+      console.log(data)
       const res = await axios.post('/api/user', data)
 
       console.log(`Signup successful for ${email}`)

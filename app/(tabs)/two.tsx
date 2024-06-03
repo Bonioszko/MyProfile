@@ -15,15 +15,15 @@ export default function TabTwoScreen() {
   const [hasNfc, setHasNFC] = useState(false)
   const { user } = useUser()
 
-  const [scannedUser, setScannedUser] = useState<OmitFriends>({
-    name: 'not scanned',
-    email: 'not scanned',
-    phone: 'not scanned',
-    facebook: 'not scanned',
-    instagram: 'not scanned',
-    linkedin: 'not scanned',
-    twitter: 'not scanned',
-  })
+  // const [scannedUser, setScannedUser] = useState<OmitFriends>({
+  //   name: 'not scanned',
+  //   email: 'not scanned',
+  //   phone: 'not scanned',
+  //   facebook: 'not scanned',
+  //   instagram: 'not scanned',
+  //   linkedin: 'not scanned',
+  //   twitter: 'not scanned',
+  // })
   async function startNfcReading() {
     setIsScanning(true)
     try {
@@ -92,7 +92,7 @@ export default function TabTwoScreen() {
   }
 
   return (
-    <View className='flex flex-1 flex-col items-center justify-center gap-4 dark:bg-black'>
+    <View className='flex flex-1 flex-col items-center justify-center gap-4 bg-secondary-color dark:bg-secondary-color-dark'>
       {hasNfc ? (
         <>
           <Modal isVisible={isScanning || isWriting} className='flex items-center justify-center '>
@@ -128,7 +128,9 @@ export default function TabTwoScreen() {
           <Button title='Share a card' onPress={startNFCWriting} /> */}
         </>
       ) : (
-        <Text className='text-white'>Your device does not support NFC</Text>
+        <Text className='text-2xl font-bold text-black dark:text-white'>
+          Your device does not support NFC
+        </Text>
       )}
     </View>
   )

@@ -76,19 +76,19 @@ export default function Profile() {
   return user ? (
     <ScrollView className=' bg-secondary-color dark:bg-secondary-color-dark'>
       <View className=' mt-4 flex items-center justify-center'>
-        <Text className=' text-2xl font-bold'>Hello {user.name}</Text>
-        <Text className=' text-lg '>This is your card</Text>
+        <Text className=' text-2xl font-bold text-gray-900 dark:text-white'>Hello {user.name}</Text>
+        <Text className=' text-lg text-gray-900 dark:text-white '>This is your card</Text>
 
         <View className='mb-8 flex w-full items-center justify-center'>
           <Pressable onPress={() => setFormOpened(true)}>
             <View className='flex  min-w-[300px] items-end p-3'>
-              <FontAwesome name='pencil' size={25}></FontAwesome>
+              <FontAwesome name='pencil' size={25} color='#6B7280'></FontAwesome>
             </View>
           </Pressable>
           {cardData ? <Card card={cardData}></Card> : <Text>'create a card'</Text>}
         </View>
         <View className='flex flex-col  items-center justify-center gap-y-4 '>
-          <Text className='font-bold'>Your friends</Text>
+          <Text className='font-bold text-gray-900 dark:text-white'>Your friends</Text>
           {friendsCards.length > 0 ? (
             friendsCards.map((card) => (
               <View>

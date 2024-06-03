@@ -42,6 +42,7 @@ const AuthProvider = ({ children }: { children: ReactNode }): ReactElement => {
       console.log('Authenticated!')
 
       setIsAuthenticated(true)
+
       setIsLoading(false)
     } catch (err: any | AxiosError) {
       if (axios.isAxiosError(err)) {
@@ -50,13 +51,14 @@ const AuthProvider = ({ children }: { children: ReactNode }): ReactElement => {
         } else {
           ToastAndroid.show('An unexpected error occured', ToastAndroid.SHORT)
         }
+        setIsAuthenticated(false)
+        setIsLoading(false)
       } else {
         console.log(err)
         ToastAndroid.show('An unexpected error occured', ToastAndroid.SHORT)
+        setIsAuthenticated(false)
+        setIsLoading(false)
       }
-    } finally {
-      setIsAuthenticated(false)
-      setIsLoading(false)
     }
   }, [])
 

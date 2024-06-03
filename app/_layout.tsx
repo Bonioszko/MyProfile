@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { View, Text, StyleSheet, Button, Pressable } from 'react-native'
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
+import { DarkTheme, DefaultTheme } from '@react-navigation/native'
 import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
@@ -17,7 +17,7 @@ import ModalScreen from './modal'
 import Signin from './signin'
 import Signup from './signup'
 import { UserProvider } from '@/context/UserContext'
-import { ThemeProvider } from '@/context/ThemeContext'
+import ThemeContext, { ThemeProvider } from '@/context/ThemeContext'
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -52,16 +52,20 @@ export default function RootLayout() {
   }, [loaded])
 
   return (
-    <AuthProvider>
-      <RootLayoutNav />
-    </AuthProvider>
+    <UserProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <RootLayoutNav />
+        </AuthProvider>
+      </ThemeProvider>
+    </UserProvider>
   )
 }
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme()
   const authContext = useAuth()
-
+  const { theme, toggleTheme } = useContext(ThemeContext)
   const Stack = createNativeStackNavigator()
 
   if (authContext.isLoading) {
@@ -70,36 +74,67 @@ function RootLayoutNav() {
   }
 
   return (
-    <UserProvider>
-      <ThemeProvider>
-        <Stack.Navigator>
-          {authContext.isAuthenticated ? (
-            <>
-              <Stack.Screen
-                name='(tabs)'
-                component={TabLayout}
-                options={{
-                  headerTitle: 'MyProfile',
-                  headerRight: () => (
-                    <Pressable
-                      className='bg-red-400 p-2 focus:bg-white'
-                      onPress={authContext.signout}
-                    >
-                      <Text className='font-bold text-white'>Signout</Text>
-                    </Pressable>
-                  ),
-                }}
-              />
-              <Stack.Screen name='modal' component={ModalScreen} />
-            </>
-          ) : (
-            <>
-              <Stack.Screen name='signin' component={Signin} />
-              <Stack.Screen name='signup' component={Signup} />
-            </>
-          )}
-        </Stack.Navigator>
-      </ThemeProvider>
-    </UserProvider>
+    <Stack.Navigator>
+      {authContext.isAuthenticated ? (
+        <>
+          <Stack.Screen
+            name='(tabs)'
+            component={TabLayout}
+            options={{
+              headerTitle: 'MyProfile',
+              headerStyle: {
+                backgroundColor: theme === 'dark' ? '#0077b6' : '#EFFFFD',
+              },
+
+              headerRight: () => (
+                <View className='flex flex-row items-center justify-center gap-x-4'>
+                  <Pressable
+                    className='bg-red-400 p-2 focus:bg-white'
+                    onPress={authContext.signout}
+                  >
+                    <Text className='font-bold text-white'>Signout</Text>
+                  </Pressable>
+                  <Pressable onPress={toggleTheme}>
+                    <FontAwesome name='moon-o' size={24}></FontAwesome>
+                  </Pressable>
+                </View>
+              ),
+            }}
+          />
+          <Stack.Screen name='modal' component={ModalScreen} />
+        </>
+      ) : (
+        <>
+          <Stack.Screen
+            name='signin'
+            component={Signin}
+            options={{
+              headerStyle: {
+                backgroundColor: theme === 'dark' ? '#0077b6' : '#EFFFFD',
+              },
+              headerRight: () => (
+                <Pressable onPress={toggleTheme}>
+                  <FontAwesome name='moon-o' size={24}></FontAwesome>
+                </Pressable>
+              ),
+            }}
+          />
+          <Stack.Screen
+            name='signup'
+            component={Signup}
+            options={{
+              headerStyle: {
+                backgroundColor: theme === 'dark' ? '#0077b6' : '#EFFFFD',
+              },
+              headerRight: () => (
+                <Pressable onPress={toggleTheme}>
+                  <FontAwesome name='moon-o' size={24}></FontAwesome>
+                </Pressable>
+              ),
+            }}
+          />
+        </>
+      )}
+    </Stack.Navigator>
   )
 }
