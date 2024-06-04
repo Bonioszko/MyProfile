@@ -90,3 +90,14 @@ exports.getFriendsCards = async function (req, res) {
 
   return res.status(200).json({ cards: allFriendsCards })
 }
+
+exports.deleteFriend = async function (req, res) {
+  const friendEmail = req.params.email
+  utility.assert(friendEmail, '')
+  const friendData = await user.get({ email: friendEmail })
+  const friendId = friendData.id
+
+  await user.deleteFriend({ userId: req.user, friendId })
+
+  return res.status(200).send()
+}

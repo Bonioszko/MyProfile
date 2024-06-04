@@ -11,22 +11,22 @@ export default function Card({ card, isOwner = false }: CardProps) {
   const handlePress = () => {
     router.push({
       pathname: '/card/[id]',
-      params: { id: card.id },
+      params: { id: card?.id },
     })
   }
 
   return (
     <Pressable onPress={handlePress}>
       <View className='flex  min-h-[200px] w-[300px] items-center justify-around rounded-lg bg-third-color p-4'>
-        <Text className='text-xl font-bold'>{card?.name}</Text>
+        <Text className='text-xl font-bold'>{isOwner ? card?.name : card?.user_name}</Text>
         {!isOwner && (
           <Image
-            source={{ uri: `https://api.dicebear.com/8.x/bottts/png?seed=${card.email}` }}
+            source={{ uri: `https://api.dicebear.com/8.x/bottts/png?seed=${card?.email}` }}
             className='mb-4 h-16 w-16'
           />
         )}
         <Text className='text-l font-bold'>{card?.email}</Text>
-        <Text className='text-l font-bold'>{card?.phone}</Text>
+        <Text className='text-l my-2 mb-6 font-bold'>{card?.phone}</Text>
         <View className='flex w-[250px] flex-row justify-between'>
           <FontAwesome
             name='facebook'

@@ -38,7 +38,7 @@ const AuthProvider = ({ children }: { children: ReactNode }): ReactElement => {
           const parsedUser = await JSON.parse(user)
           const token = parsedUser.token
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-          setUser({ email: parsedUser.email })
+          setUser({ email: parsedUser.email, name: parsedUser.name })
         }
       }
 
@@ -77,7 +77,7 @@ const AuthProvider = ({ children }: { children: ReactNode }): ReactElement => {
       getAuth()
 
       await AsyncStorage.setItem('user', JSON.stringify(user))
-      setUser({ email: user.email })
+      setUser({ email: user.email, name: user.name })
     } catch (error) {
       // Error saving data
     }

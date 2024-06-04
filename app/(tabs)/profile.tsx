@@ -78,9 +78,7 @@ export default function Profile() {
   return user ? (
     <ScrollView className=' bg-secondary-color dark:bg-secondary-color-dark'>
       <View className='mt-4 flex items-center justify-center'>
-        <Text className=' text-2xl font-bold text-gray-900 dark:text-white'>
-          Hello {user.email}
-        </Text>
+        <Text className=' text-2xl font-bold text-gray-900 dark:text-white'>Hello {user.name}</Text>
 
         <Image
           source={{ uri: `https://api.dicebear.com/8.x/bottts/png?seed=${user.email}` }}
@@ -113,7 +111,7 @@ export default function Profile() {
             </Pressable>
           )}
         </View>
-        <View className='flex flex-col  items-center justify-center gap-y-4 '>
+        <View className='flex flex-col  items-center justify-center gap-y-4 pb-8'>
           <Text className='font-bold text-gray-900 dark:text-white'>Your friends</Text>
           {friendsCards.length > 0 ? (
             friendsCards.map((card) => (

@@ -96,9 +96,13 @@ exports.addCard = async function ({ userId, cardId }) {
 exports.getAllUserCards = async function (userId) {
   const user = await User.findOne({ id: userId })
 
-  const cardPromises = user.cards.map((id) => card.get(id))
-  const cards = await Promise.all(cardPromises)
-  return cards
+  const cardData = await card.get(user.cards[0])
+  const x = { ...cardData._doc, user_name: user.name }
+  // let cards = await Promise.all(cardPromises)
+  // cards[0].user_name = user.name
+  // console.log(cards)
+
+  return [x]
 }
 
 exports.addFriend = async function ({ userId, friendId }) {
@@ -106,6 +110,11 @@ exports.addFriend = async function ({ userId, friendId }) {
   console.log(result)
   const friend = await User.updateOne({ id: friendId }, { $addToSet: { friends: userId } })
   return result
+}
+
+exports.deleteFriend = async function ({ userId, friendId }) {
+  await User.updateOne({ id: userId }, { $pull: { friends: friendId } })
+  await User.updateOne({ id: friendId }, { $pull: { friends: userId } })
 }
 
 exports.getFriends = async function ({ userId }) {

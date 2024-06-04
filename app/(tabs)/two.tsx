@@ -14,6 +14,7 @@ type OmitFriends = Omit<User, 'friends'>
 export default function TabTwoScreen() {
   const { toggleFetchFriends } = useContext(FetchFriendsContext)
   const [isScanning, setIsScanning] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [isWriting, setIsWriting] = useState(false)
   const [cardData, setCardData] = useState<CardType | null>(null)
   const [hasNfc, setHasNFC] = useState(false)
@@ -21,33 +22,25 @@ export default function TabTwoScreen() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          `${process.env.EXPO_PUBLIC_SERVER_URL}/api/user/${user?.email}/cards`
-        )
-        const data = await response.json()
+        const res = await axios.get(`/api/user/${user?.email}/cards`)
 
-        setCardData(data[0])
+        console.log('x', res.data)
+
+        setCardData(res.data[0])
       } catch (error) {
         console.error('Failed to fetch data:', error)
       }
     }
     fetchData()
   }, [user])
-  // const [scannedUser, setScannedUser] = useState<OmitFriends>({
-  //   name: 'not scanned',
-  //   email: 'not scanned',
-  //   phone: 'not scanned',
-  //   facebook: 'not scanned',
-  //   instagram: 'not scanned',
-  //   linkedin: 'not scanned',
-  //   twitter: 'not scanned',
-  // })
+
   async function startNfcReading() {
     let userEmail = ''
     setIsScanning(true)
     try {
       await NfcManager.requestTechnology(NfcTech.Ndef)
       let tag = await NfcManager.getTag()
+      setIsLoading(true)
       if (tag?.ndefMessage) {
         const content = Ndef.decodeMessage(tag.ndefMessage[0].payload)
 
@@ -74,6 +67,7 @@ export default function TabTwoScreen() {
     } finally {
       NfcManager.cancelTechnologyRequest()
       stopNfc(() => setIsScanning(false))
+      setIsLoading(false)
     }
   }
 
@@ -122,19 +116,23 @@ export default function TabTwoScreen() {
       {hasNfc ? (
         <>
           <Modal isVisible={isScanning || isWriting} className='flex items-center justify-center '>
-            <View className='flex h-1/3 w-full items-center justify-between '>
+            <View className='flex w-full items-center justify-between bg-secondary-color py-6 dark:bg-secondary-color-dark'>
               {/* <Card user={isScanning ? scannedUser : user}></Card> */}
               {isScanning ? (
-                <View className='flex h-1/3 w-2/3 items-center justify-center rounded-lg bg-secondary-color dark:bg-secondary-color-dark '>
-                  <Text className='text-3xl font-extrabold dark:text-white'>Scanning ...</Text>
+                <View className='flex h-1/3 items-center justify-center rounded-lg bg-secondary-color dark:bg-secondary-color-dark '>
+                  <Text className='text-3xl font-extrabold dark:text-white'>
+                    {isLoading ? 'Loading...' : 'Scanning...'}
+                  </Text>
                 </View>
               ) : (
                 <Card card={cardData}></Card>
               )}
-              <Button
-                title='Stop scanning'
-                onPress={isScanning ? () => stopNfc(setIsScanning) : () => stopNfc(setIsWriting)}
-              />
+              <View className='mt-6'>
+                <Button
+                  title='Stop scanning'
+                  onPress={isScanning ? () => stopNfc(setIsScanning) : () => stopNfc(setIsWriting)}
+                />
+              </View>
             </View>
           </Modal>
           <Pressable
