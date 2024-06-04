@@ -51,23 +51,13 @@ export default function Profile() {
   const saveForm = async () => {
     const cardId = cardData?.id
     const method = cardId ? 'PATCH' : 'POST'
-    const url = cardId
-      ? `${process.env.EXPO_PUBLIC_SERVER_URL}/api/card/${cardId}`
-      : `${process.env.EXPO_PUBLIC_SERVER_URL}/api/card`
+    const url = cardId ? `/api/card/${cardId}` : `/api/card`
     try {
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userEmail: user?.email, ...formData }),
-      })
-      console.log(response)
-      if (!response.ok) {
-        throw new Error('Network response was not ok')
-      }
+      const response = cardId
+        ? await axios.patch(url, { userEmail: user?.email, ...formData })
+        : await axios.post(url, { userEmail: user?.email, ...formData })
 
-      const data = await response.json()
+      const data = await response.data
       console.log('Success:', data)
     } catch (error) {
       console.error('Error:', error)

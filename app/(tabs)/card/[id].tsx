@@ -15,13 +15,10 @@ export default function CardDetail({ navigation }) {
   const [cardData, setCardData] = useState(null)
   const { toggleFetchFriends } = useContext(FetchFriendsContext)
 
-  console.log(cardData)
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${process.env.EXPO_PUBLIC_SERVER_URL}/api/card/${id}`)
-        console.log(response.data)
+        const response = await axios.get(`/api/card/${id}`)
         setCardData(response.data.card)
       } catch (error) {
         console.error('Failed to fetch data:', error)

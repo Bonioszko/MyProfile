@@ -38,7 +38,8 @@ export default function RootLayout() {
     ...FontAwesome.font,
   })
 
-  axios.defaults.baseURL = process.env.EXPO_PUBLIC_SERVER_URL
+  // axios.defaults.baseURL = process.env.EXPO_PUBLIC_SERVER_URL
+  axios.defaults.baseURL = 'https://shark-app-mkwbi.ondigitalocean.app'
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
