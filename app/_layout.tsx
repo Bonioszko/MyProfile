@@ -18,7 +18,7 @@ import Signin from './signin'
 import Signup from './signup'
 import { UserProvider } from '@/context/UserContext'
 import ThemeContext, { ThemeProvider } from '@/context/ThemeContext'
-
+import { FetchFriendsProvider } from '@/context/FetchFriendsContext'
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -52,13 +52,15 @@ export default function RootLayout() {
   }, [loaded])
 
   return (
-    <UserProvider>
-      <ThemeProvider>
-        <AuthProvider>
-          <RootLayoutNav />
-        </AuthProvider>
-      </ThemeProvider>
-    </UserProvider>
+    <FetchFriendsProvider>
+      <UserProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <RootLayoutNav />
+          </AuthProvider>
+        </ThemeProvider>
+      </UserProvider>
+    </FetchFriendsProvider>
   )
 }
 

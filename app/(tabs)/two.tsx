@@ -9,9 +9,10 @@ import { CardType } from '@/.expo/types/card'
 import { Link, router } from 'expo-router'
 import axios from 'axios'
 import { useAuth } from '@/context/AuthContext'
-
+import { FetchFriendsContext } from '@/context/FetchFriendsContext'
 type OmitFriends = Omit<User, 'friends'>
 export default function TabTwoScreen() {
+  const { toggleFetchFriends } = useContext(FetchFriendsContext)
   const [isScanning, setIsScanning] = useState(false)
   const [isWriting, setIsWriting] = useState(false)
   const [cardData, setCardData] = useState<CardType | null>(null)
@@ -61,6 +62,7 @@ export default function TabTwoScreen() {
       if (response.status === 200) {
         const responseCard = await axios.get(`/api/user/${userEmail}/cards`)
         if (responseCard.status === 200) {
+          toggleFetchFriends()
           router.push({
             pathname: '/card/[id]',
             params: { id: responseCard.data[0].id },
@@ -123,8 +125,8 @@ export default function TabTwoScreen() {
             <View className='flex h-1/3 w-full items-center justify-between '>
               {/* <Card user={isScanning ? scannedUser : user}></Card> */}
               {isScanning ? (
-                <View className='flex h-1/3 w-2/3 items-center justify-center bg-secondary-color dark:bg-secondary-color-dark'>
-                  <Text className='text-3xl font-extrabold'>Scanning ...</Text>
+                <View className='flex h-1/3 w-2/3 items-center justify-center rounded-lg bg-secondary-color dark:bg-secondary-color-dark '>
+                  <Text className='text-3xl font-extrabold dark:text-white'>Scanning ...</Text>
                 </View>
               ) : (
                 <Card card={cardData}></Card>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Button, View, Text, Pressable, ScrollView, Image } from 'react-native'
 import Modal from 'react-native-modal'
 import NfcManager, { NfcTech } from 'react-native-nfc-manager'
@@ -10,8 +10,10 @@ import { useUser } from '@/context/UserContext'
 import FormInput from '@/components/FormInput'
 import { useAuth } from '@/context/AuthContext'
 import axios from 'axios'
+import { FetchFriendsContext } from '@/context/FetchFriendsContext'
 export default function Profile() {
   const { user } = useAuth()
+  const { fetchFriends } = useContext(FetchFriendsContext)
   const [formOpened, setFormOpened] = useState(false)
   const [cardData, setCardData] = useState<CardType | null>(null)
   const [formData, setFormData] = useState({ ...cardData })
@@ -41,7 +43,7 @@ export default function Profile() {
       }
     }
     fetchData()
-  }, [user])
+  }, [user, fetchFriends])
 
   const changeInput = (field: string, value: string) => {
     setFormData((prevState) => ({ ...prevState, [field]: value }))
@@ -120,12 +122,12 @@ export default function Profile() {
               </View>
             ))
           ) : (
-            <Text>No friends found :</Text>
+            <Text className='text-xl dark:text-white'>No friends found</Text>
           )}
         </View>
       </View>
       <Modal isVisible={formOpened} className='flex  items-center justify-center'>
-        <View className='flex w-full items-center justify-center gap-y-2 rounded-lg bg-main-color p-7'>
+        <View className='flex w-full items-center justify-center gap-y-2 rounded-lg bg-main-color p-7 dark:bg-main-color-dark'>
           <Text className='mb-4 text-3xl font-bold'>Update your data</Text>
           <FormInput
             key='name'
